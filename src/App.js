@@ -47,21 +47,34 @@ class TodosView extends Component {
       completed: false,
     };
 
-    axios.post('http://localhost:3000/todos', todo).then(console.log);
+    axios.post('http://localhost:3000/todos', todo).then(({ data }) => {
+      this.setState(({ todos }) => ({
+        todos: [data, ...todos],
+      }));
+      this.toggleModal();
+    });
 
-    this.setState(({ todos }) => ({
-      todos: [todo, ...todos],
-    }));
-
-    this.toggleModal();
   };
 
   deleteTodo = todoId => {
+    axios.delete(`http://localhost:3000/todos/${todoId}`).then(() => {
+      this.setState(({ todos }) => ({
+        todos: todos.filter(({ id }) => id !== todoId),
+      }));
+    })
 
   };
 
   toggleCompleted = todoId => {
+    const todo = this.state.todos.find(({ id }) => id === todoId);
+    console.log(todo);
 
+    // axios.patch(`http://localhost:3000/todos/${todoId}`,)
+    // this.setState(({ todos }) => ({
+    //   todos: todos.map(todo =>
+    //     todo.id === todoId ? { ...todo, completed: !todo.completed } : todo,
+    //   ),
+    // }));
   };
 }
 
